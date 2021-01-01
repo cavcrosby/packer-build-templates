@@ -5,11 +5,11 @@
         "ssh_pass": "Passw0rd!",
         "shutdown_command": "sudo -S shutdown -h now",
         "guest_os_type": "_PLACEHOLDER",
+        "os_build_conf_filename": "_PLACEHOLDER",
         "iso_file_name": "_PLACEHOLDER",
         "iso_file_hash": "_PLACEHOLDER",
         "iso_url_local_parent_directory": "file:///_PLACEHOLDER",
-        "iso_url_mirror1": "_PLACEHOLDER",
-        "iso_url_mirror2": "_PLACEHOLDER"
+        "shell_provisioner_filename": "_PLACEHOLDER"
     },
     "builders": [
     {
@@ -17,13 +17,10 @@
         "guest_os_type": "{{user `guest_os_type`}}",
         "vm_name": "{{user `hostname`}}",
         "iso_urls": [
-            "{{user `iso_url_local_parent_directory`}}/{{user `iso_file_name`}}",
-            "{{user `iso_url_mirror1`}}",
-            "{{user `iso_url_mirror2`}}"
+            "{{user `iso_url_local_parent_directory`}}/{{user `iso_file_name`}}"
         ],
-        "iso_target_path": "{{user `iso_url_local_parent_directory`}}/{{user `iso_file_name`}}",
-        "iso_checksum": "sha1:{{user `iso_file_hash`}}",
-        "output_directory": "./{{user `hostname`}}",
+        "iso_checksum": "sha256:{{user `iso_file_hash`}}",
+        "output_directory": "./output/",
         "ssh_username": "{{user `ssh_user`}}",
         "ssh_password": "{{user `ssh_pass`}}",
         "shutdown_command": "echo {{user `ssh_pass`}} | {{user `shutdown_command`}}",
@@ -63,7 +60,7 @@
             " netcfg/get_hostname={{user `hostname`}}<wait>",
             " grub-installer/bootdev=/dev/sda<wait>",
             " noapic<wait>",
-            " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg",
+            " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/{{user `os_build_conf_name`}}",
             " -- <wait>",
             "<enter><wait>"
         ]
@@ -71,7 +68,7 @@
 ],
     "provisioners": [{
         "type": "shell",
-        "script": "./scripts/shell-provisioner.sh",
+        "script": "./scripts/{{user `shell_provisioner_filename`}}",
         "environment_vars": [
             "SSH_PASSWORD={{user `ssh_pass`}}"
         ]

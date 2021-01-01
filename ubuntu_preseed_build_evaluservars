@@ -1,0 +1,42 @@
+#!/bin/bash
+#
+# Used by the 'jenkin-scripts' repo, for the packerbuilds project
+
+#######################################
+# Used to determine fill-in configurations for 
+# the template file used by HashiCorp's Packer.
+# Globals:
+#   HOSTNAME
+#   GUEST_OS_TYPE
+#   OS_BUILD_CONF_NAME
+#   ISO_FILE
+#   ISO_CHECKSUM
+#   ISO_IMAGES_PATH
+#   SHELL_PROVISIONER_NAME
+#   PACKER_BUILD_TEMPLATE_NAME
+# Outputs:
+#   - ?
+#######################################
+ubuntu_preseed_build_evaluservars () {
+    USERVARS_JSON << _EOF_
+{
+    "hostname": "$HOSTNAME",
+    "ssh_user": "reap2sow1",
+    "ssh_pass": "Passw0rd!",
+    "shutdown_command": "sudo -S shutdown -h now",
+    "guest_os_type": "$GUEST_OS_TYPE",
+    "os_build_conf_filename": "$OS_BUILD_CONF_NAME",
+    "iso_file_name": "$ISO_FILE",
+    "iso_file_hash": "$ISO_CHECKSUM",
+    "iso_url_local_parent_directory": "file:///$ISO_IMAGES_PATH",
+    "shell_provisioner_filename": "$SHELL_PROVISIONER_NAME"
+}
+_EOF_
+    PROGRAM_NAME="${FUNCNAME[0]}"
+    TEMP_FILE_NAME="${PROGRAM_NAME}_temp"
+    # shellcheck disable=2154
+    # check jq documentation, inspired from:
+    # https://stackoverflow.com/questions/53670702/jq-error-test1-0-is-not-defined-at-top-level-line-1#answer-53674099
+    jq < "$PACKER_BUILD_TEMPLATE_NAME" --arg heredoc "$USERVARS_JSON" ".variables + $heredoc" > "$TEMP_FILE_NAME"
+    mv "$TEMP_FILE_NAME" "$PACKER_BUILD_TEMPLATE_NAME"
+}
