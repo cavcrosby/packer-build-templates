@@ -33,11 +33,11 @@ ubuntu_preseed_build_evaluservars () {
             "ssh_pass": "Passw0rd!",
             "shutdown_command": "sudo -S shutdown -h now",
             "guest_os_type": $GUEST_OS_TYPE,
-            "os_build_conf_filename": $OS_BUILD_CONF_NAME,
+            "os_build_conf": $OS_BUILD_CONF_NAME,
             "iso_file_name": $ISO_FILE,
             "iso_file_hash": $ISO_CHECKSUM,
             "iso_url_local_parent_directory": $ISO_IMAGES_PATH,
-            "shell_provisioner_filename": $SHELL_PROVISIONER_NAME
+            "shell_provisioner": $SHELL_PROVISIONER_NAME
             }
         }
     )' > "$TEMP_FILE_NAME"

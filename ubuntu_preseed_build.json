@@ -5,11 +5,11 @@
         "ssh_pass": "Passw0rd!",
         "shutdown_command": "sudo -S shutdown -h now",
         "guest_os_type": "_PLACEHOLDER",
-        "os_build_conf_filename": "_PLACEHOLDER",
+        "os_build_conf": "_PLACEHOLDER",
         "iso_file_name": "_PLACEHOLDER",
         "iso_file_hash": "_PLACEHOLDER",
         "iso_url_local_parent_directory": "file:///_PLACEHOLDER",
-        "shell_provisioner_filename": "_PLACEHOLDER"
+        "shell_provisioner": "_PLACEHOLDER"
     },
     "builders": [
     {
@@ -60,7 +60,7 @@
             " netcfg/get_hostname={{user `hostname`}}<wait>",
             " grub-installer/bootdev=/dev/sda<wait>",
             " noapic<wait>",
-            " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/{{user `os_build_conf_name`}}",
+            " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/{{user `os_build_conf`}}",
             " -- <wait>",
             "<enter><wait>"
         ]
@@ -68,7 +68,7 @@
 ],
     "provisioners": [{
         "type": "shell",
-        "script": "./scripts/{{user `shell_provisioner_filename`}}",
+        "script": "./scripts/{{user `shell_provisioner`}}",
         "environment_vars": [
             "SSH_PASSWORD={{user `ssh_pass`}}"
         ]
