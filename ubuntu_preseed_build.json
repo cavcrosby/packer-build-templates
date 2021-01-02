@@ -29,7 +29,7 @@
         "disk_size": "5000",
         "headless": "true",
         "http_directory": "http",
-        "ssh_wait_timeout": "1h",
+        "ssh_wait_timeout": "24h",
         "ssh_pty": "true",
         "vboxmanage_post": [
             ["modifyvm", "{{user `hostname`}}", "--cpus", "2"],
