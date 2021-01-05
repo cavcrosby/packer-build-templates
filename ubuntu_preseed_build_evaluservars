@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Used by the 'jenkin-scripts' repo, for the packerbuilds project
+# Used by the 'jenkins-packerbuilds' repo
 
 #######################################
 # Used to determine fill-in configurations for 
@@ -15,7 +15,7 @@
 #   SHELL_PROVISIONER_NAME
 #   PACKER_BUILD_TEMPLATE_NAME
 # Outputs:
-#   - ?
+#   - the previous template but with _PLACEHOLDER(s) evaluated
 #######################################
 ubuntu_preseed_build_evaluservars () {
     PROGRAM_NAME="${FUNCNAME[0]}"
