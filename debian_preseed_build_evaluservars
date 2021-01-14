@@ -1,0 +1,45 @@
+#!/bin/bash
+#
+# Used by the 'jenkins-packerbuilds' repo
+
+#######################################
+# Used to determine fill-in configurations for 
+# the template file used by HashiCorp's Packer.
+# Globals:
+#   HOSTNAME
+#   GUEST_OS_TYPE
+#   OS_BUILD_CONF_NAME
+#   ISO_FILE
+#   ISO_CHECKSUM
+#   ISO_IMAGES_PATH
+#   SHELL_PROVISIONER_NAME
+#   PACKER_BUILD_TEMPLATE_NAME
+# Outputs:
+#   - the previous template but with _PLACEHOLDER(s) evaluated
+#######################################
+debian_preseed_build_evaluservars () {
+    PROGRAM_NAME="${FUNCNAME[0]}"
+    TEMP_FILE_NAME="${PROGRAM_NAME}_temp"
+    # check jq documentation, inspired from:
+    # https://stackoverflow.com/questions/53670702/jq-error-test1-0-is-not-defined-at-top-level-line-1#answer-53674099
+    jq < "debian_preseed_build.json" --arg PACKERBUILD_NAME "$PACKERBUILD_NAME" --arg GUEST_OS_TYPE "$GUEST_OS_TYPE" \
+     --arg OS_BUILD_CONF_NAME "$OS_BUILD_CONF_NAME" --arg ISO_FILE "$ISO_FILE" --arg ISO_CHECKSUM "$ISO_CHECKSUM" \
+     --arg ISO_IMAGES_PATH "file://$ISO_IMAGES_PATH" --arg SHELL_PROVISIONER_NAME "$SHELL_PROVISIONER_NAME" \
+     '. += (
+        { variables: 
+            {
+            "hostname": $PACKERBUILD_NAME,
+            "ssh_user": "reap2sow1",
+            "ssh_pass": "Passw0rd!",
+            "shutdown_command": "sudo -S shutdown -h now",
+            "guest_os_type": $GUEST_OS_TYPE,
+            "os_build_conf": $OS_BUILD_CONF_NAME,
+            "iso_file_name": $ISO_FILE,
+            "iso_file_hash": $ISO_CHECKSUM,
+            "iso_url_local_parent_directory": $ISO_IMAGES_PATH,
+            "shell_provisioner": $SHELL_PROVISIONER_NAME
+            }
+        }
+    )' > "$TEMP_FILE_NAME"
+    mv "$TEMP_FILE_NAME" "$PACKER_BUILD_TEMPLATE_NAME"
+}
