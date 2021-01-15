@@ -17,12 +17,12 @@
 # Outputs:
 #   - the previous template but with _PLACEHOLDER(s) evaluated
 #######################################
-debian_preseed_build_evaluservars () {
+evaluservars () {
     PROGRAM_NAME="${FUNCNAME[0]}"
     TEMP_FILE_NAME="${PROGRAM_NAME}_temp"
     # check jq documentation, inspired from:
     # https://stackoverflow.com/questions/53670702/jq-error-test1-0-is-not-defined-at-top-level-line-1#answer-53674099
-    jq < "debian_preseed_build.json" --arg PACKERBUILD_NAME "$PACKERBUILD_NAME" --arg GUEST_OS_TYPE "$GUEST_OS_TYPE" \
+    jq < "$PACKER_BUILD_TEMPLATE_NAME" --arg PACKERBUILD_NAME "$PACKERBUILD_NAME" --arg GUEST_OS_TYPE "$GUEST_OS_TYPE" \
      --arg OS_BUILD_CONF_NAME "$OS_BUILD_CONF_NAME" --arg ISO_FILE "$ISO_FILE" --arg ISO_CHECKSUM "$ISO_CHECKSUM" \
      --arg ISO_IMAGES_PATH "file://$ISO_IMAGES_PATH" --arg SHELL_PROVISIONER_NAME "$SHELL_PROVISIONER_NAME" \
      '. += (

@@ -12,66 +12,86 @@
         "shell_provisioner": "_PLACEHOLDER"
     },
     "builders": [
-    {
-        "type": "virtualbox-iso",
-        "format": "ova",
-        "guest_os_type": "{{user `guest_os_type`}}",
-        "vm_name": "{{user `hostname`}}",
-        "iso_urls": [
-            "{{user `iso_url_local_parent_directory`}}/{{user `iso_file_name`}}"
-        ],
-        "iso_checksum": "sha256:{{user `iso_file_hash`}}",
-        "output_directory": "./output/",
-        "ssh_username": "{{user `ssh_user`}}",
-        "ssh_password": "{{user `ssh_pass`}}",
-        "shutdown_command": "echo {{user `ssh_pass`}} | {{user `shutdown_command`}}",
-        "memory": "2048",
-        "cpus": "2",
-        "disk_size": "5000",
-        "headless": "true",
-        "http_directory": "http",
-        "ssh_wait_timeout": "24h",
-        "ssh_pty": "true",
-        "vboxmanage_post": [
-            ["modifyvm", "{{user `hostname`}}", "--cpus", "2"],
-            ["modifyvm", "{{user `hostname`}}", "--memory", "2048"],
-            ["modifyvm", "{{user `hostname`}}", "--nic1", "hostonly", "--hostonlyadapter1", "vboxnet0"],
-            ["modifyvm", "{{user `hostname`}}", "--groups", "/Sandbox"],
-            ["snapshot", "{{user `hostname`}}", "take", "Clean Setup/Config", "--description", "Machine set with proper CPU, RAM, and ISO image. Host Adapter set for the network configuration."]
-        ],
-        "boot_command": [
-            "<enter><wait><f6><esc><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-            "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-            "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-            "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-            "/install/vmlinuz<wait>",
-            " auto<wait>",
-            " console-setup/ask_detect=false<wait>",
-            " console-setup/layoutcode=us<wait>",
-            " console-setup/modelcode=pc105<wait>",
-            " debconf/frontend=noninteractive<wait>",
-            " debian-installer=en_US<wait>",
-            " fb=false<wait>",
-            " initrd=/install/initrd.gz<wait>",
-            " kbd-chooser/method=us<wait>",
-            " keyboard-configuration/layout=USA<wait>",
-            " keyboard-configuration/variant=USA<wait>",
-            " locale=en_US<wait>",
-            " netcfg/get_domain={{user `domain`}}<wait>",
-            " netcfg/get_hostname={{user `hostname`}}<wait>",
-            " grub-installer/bootdev=/dev/sda<wait>",
-            " noapic<wait>",
-            " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/{{user `os_build_conf`}}",
-            " -- <wait>",
-            "<enter><wait>"
-        ]
-    }
-],
-    "provisioners": [{
-        "type": "shell",
-        "script": "./scripts/{{user `shell_provisioner`}}",
-        "environment_vars": [
-            "SSH_PASSWORD={{user `ssh_pass`}}"
-        ]
-    }]
+        {
+            "type": "virtualbox-iso",
+            "format": "ova",
+            "guest_os_type": "{{user `guest_os_type`}}",
+            "vm_name": "{{user `hostname`}}",
+            "iso_urls": [
+                "{{user `iso_url_local_parent_directory`}}/{{user `iso_file_name`}}"
+            ],
+            "iso_checksum": "sha256:{{user `iso_file_hash`}}",
+            "output_directory": "./output/",
+            "ssh_username": "{{user `ssh_user`}}",
+            "ssh_password": "{{user `ssh_pass`}}",
+            "shutdown_command": "echo {{user `ssh_pass`}} | {{user `shutdown_command`}}",
+            "memory": "2048",
+            "cpus": "2",
+            "disk_size": "10000",
+            "headless": "true",
+            "http_directory": "http",
+            "ssh_wait_timeout": "24h",
+            "ssh_pty": "true",
+            "vboxmanage_post": [
+                [
+                    "modifyvm",
+                    "{{user `hostname`}}",
+                    "--cpus",
+                    "2"
+                ],
+                [
+                    "modifyvm",
+                    "{{user `hostname`}}",
+                    "--memory",
+                    "2048"
+                ],
+                [
+                    "modifyvm",
+                    "{{user `hostname`}}",
+                    "--nic1",
+                    "hostonly",
+                    "--hostonlyadapter1",
+                    "vboxnet0"
+                ],
+                [
+                    "modifyvm",
+                    "{{user `hostname`}}",
+                    "--groups",
+                    "/Sandbox"
+                ],
+                [
+                    "snapshot",
+                    "{{user `hostname`}}",
+                    "take",
+                    "Clean Setup/Config",
+                    "--description",
+                    "VM Machine installed with OS. CPU and RAM are set according to defaults from build template. Finally, Host Adapter is set for the network configuration."
+                ]
+            ],
+            "boot_command": [
+                "<enter><wait><f6><esc><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+                "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+                "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+                "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+                "/install/vmlinuz<wait>",
+                " auto<wait>",
+                " url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/{{user `os_build_conf`}}<wait>",
+                " DEBIAN_FRONTEND=noninteractive<wait>",
+                " initrd=/install/initrd.gz<wait>",
+                " fb=false",
+                " domain=''<wait>",
+                " -- <wait>",
+                "<enter><wait>"
+            ]
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "shell",
+            "script": "./scripts/{{user `shell_provisioner`}}",
+            "environment_vars": [
+                "SSH_PASSWORD={{user `ssh_pass`}}"
+            ]
+        }
+    ]
 }

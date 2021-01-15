@@ -1,96 +1,94 @@
 {
-  "variables": {
-    "hostname": "_PLACEHOLDER",
-    "ssh_user": "reap2sow1",
-    "ssh_pass": "Passw0rd!",
-    "shutdown_command": "sudo -S shutdown -h now",
-    "guest_os_type": "_PLACEHOLDER",
-    "os_build_conf": "_PLACEHOLDER",
-    "iso_file_name": "_PLACEHOLDER",
-    "iso_file_hash": "_PLACEHOLDER",
-    "iso_url_local_parent_directory": "file:///_PLACEHOLDER",
-    "shell_provisioner": "_PLACEHOLDER"
-  },
-  "builders": [
-    {
-      "type": "virtualbox-iso",
-      "format": "ova",
-      "guest_os_type": "{{user `guest_os_type`}}",
-      "vm_name": "{{user `hostname`}}",
-      "iso_urls": [
-        "{{user `iso_url_local_parent_directory`}}/{{user `iso_file_name`}}"
-      ],
-      "iso_checksum": "sha256:{{user `iso_file_hash`}}",
-      "output_directory": "./output/",
-      "ssh_username": "{{user `ssh_user`}}",
-      "ssh_password": "{{user `ssh_pass`}}",
-      "shutdown_command": "echo {{user `ssh_pass`}} | {{user `shutdown_command`}}",
-      "memory": "2048",
-      "cpus": "2",
-      "keep_registered": "true",
-      "disk_size": "5000",
-      "headless": "false",
-      "http_directory": "http",
-      "ssh_wait_timeout": "24h",
-      "ssh_pty": "true",
-      "vboxmanage_post": [
-        [
-          "modifyvm",
-          "{{user `hostname`}}",
-          "--cpus",
-          "2"
-        ],
-        [
-          "modifyvm",
-          "{{user `hostname`}}",
-          "--memory",
-          "2048"
-        ],
-        [
-          "modifyvm",
-          "{{user `hostname`}}",
-          "--nic1",
-          "hostonly",
-          "--hostonlyadapter1",
-          "vboxnet0"
-        ],
-        [
-          "modifyvm",
-          "{{user `hostname`}}",
-          "--groups",
-          "/Sandbox"
-        ],
-        [
-          "snapshot",
-          "{{user `hostname`}}",
-          "take",
-          "Clean Setup/Config",
-          "--description",
-          "Machine set with proper CPU, RAM, and ISO image. Host Adapter set for the network configuration."
-        ]
-      ],
-      "boot_command": [
-        "<esc><wait>",
-        "/install.amd/vmlinuz<wait>",
-        " auto<wait>",
-        " url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/{{user `os_build_conf`}}<wait>",
-        " DEBIAN_FRONTEND=noninteractive<wait>",
-        " initrd=/install.amd/initrd.gz<wait>",
-        " fb=false",
-        " domain=''<wait>",
-        " hostname={{user `hostname`}}<wait>",
-        " grub-installer/bootdev=/dev/sda<wait>",
-        "<enter><wait>"
-      ]
-    }
-  ],
-  "provisioners": [
-    {
-      "type": "shell",
-      "script": "./scripts/{{user `shell_provisioner`}}",
-      "environment_vars": [
-        "SSH_PASSWORD={{user `ssh_pass`}}"
-      ]
-    }
-  ]
+	"variables": {
+		"hostname": "_PLACEHOLDER",
+		"ssh_user": "reap2sow1",
+		"ssh_pass": "Passw0rd!",
+		"shutdown_command": "sudo -S shutdown -h now",
+		"guest_os_type": "_PLACEHOLDER",
+		"os_build_conf": "_PLACEHOLDER",
+		"iso_file_name": "_PLACEHOLDER",
+		"iso_file_hash": "_PLACEHOLDER",
+		"iso_url_local_parent_directory": "file:///_PLACEHOLDER",
+		"shell_provisioner": "_PLACEHOLDER"
+	},
+	"builders": [
+		{
+			"type": "virtualbox-iso",
+			"format": "ova",
+			"guest_os_type": "{{user `guest_os_type`}}",
+			"vm_name": "{{user `hostname`}}",
+			"iso_urls": [
+				"{{user `iso_url_local_parent_directory`}}/{{user `iso_file_name`}}"
+			],
+			"iso_checksum": "sha256:{{user `iso_file_hash`}}",
+			"output_directory": "./output/",
+			"ssh_username": "{{user `ssh_user`}}",
+			"ssh_password": "{{user `ssh_pass`}}",
+			"shutdown_command": "echo {{user `ssh_pass`}} | {{user `shutdown_command`}}",
+			"memory": "2048",
+			"cpus": "2",
+			"disk_size": "10000",
+			"headless": "true",
+			"http_directory": "http",
+			"ssh_wait_timeout": "24h",
+			"ssh_pty": "true",
+			"vboxmanage_post": [
+				[
+					"modifyvm",
+					"{{user `hostname`}}",
+					"--cpus",
+					"2"
+				],
+				[
+					"modifyvm",
+					"{{user `hostname`}}",
+					"--memory",
+					"2048"
+				],
+				[
+					"modifyvm",
+					"{{user `hostname`}}",
+					"--nic1",
+					"hostonly",
+					"--hostonlyadapter1",
+					"vboxnet0"
+				],
+				[
+					"modifyvm",
+					"{{user `hostname`}}",
+					"--groups",
+					"/Sandbox"
+				],
+				[
+					"snapshot",
+					"{{user `hostname`}}",
+					"take",
+					"Clean Setup/Config",
+					"--description",
+					"VM Machine installed with OS. CPU and RAM are set according to defaults from build template. Finally, Host Adapter is set for the network configuration."
+				]
+			],
+			"boot_command": [
+				"<esc><wait>",
+				"/install.amd/vmlinuz<wait>",
+				" auto<wait>",
+				" url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/{{user `os_build_conf`}}<wait>",
+				" DEBIAN_FRONTEND=noninteractive<wait>",
+				" initrd=/install.amd/initrd.gz<wait>",
+				" fb=false",
+				" domain=<wait>",
+				" hostname={{user `hostname`}}<wait>",
+				"<enter><wait>"
+			]
+		}
+	],
+	"provisioners": [
+		{
+			"type": "shell",
+			"script": "./scripts/{{user `shell_provisioner`}}",
+			"environment_vars": [
+				"SSH_PASSWORD={{user `ssh_pass`}}"
+			]
+		}
+	]
 }
