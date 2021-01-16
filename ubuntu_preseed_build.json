@@ -80,6 +80,7 @@
                 " initrd=/install/initrd.gz<wait>",
                 " fb=false",
                 " domain=''<wait>",
+                " hostname={{user `hostname`}}<wait>",
                 " -- <wait>",
                 "<enter><wait>"
             ]
