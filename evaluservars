@@ -18,6 +18,8 @@
 #   - the previous template but with _PLACEHOLDER(s) evaluated
 #######################################
 evaluservars () {
+    # NOTE: getting the PROGRAM_NAME currently is bash specfic
+    # see https://stackoverflow.com/questions/1835943/how-to-determine-function-name-from-inside-a-function
     PROGRAM_NAME="${FUNCNAME[0]}"
     TEMP_FILE_NAME="${PROGRAM_NAME}_temp"
     # check jq documentation, inspired from:
