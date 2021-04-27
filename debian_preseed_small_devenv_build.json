@@ -1,0 +1,90 @@
+{
+	"variables": {
+		"hostname": "_PLACEHOLDER",
+		"ssh_user": "reap2sow1",
+		"ssh_pass": "Passw0rd!",
+		"shutdown_command": "sudo -S shutdown -h now",
+		"guest_os_type": "_PLACEHOLDER",
+		"os_build_conf": "_PLACEHOLDER",
+		"iso_file_name": "_PLACEHOLDER",
+		"iso_file_hash": "_PLACEHOLDER",
+		"iso_url_local_parent_directory": "file:///_PLACEHOLDER",
+		"shell_provisioner": "_PLACEHOLDER"
+	},
+	"builders": [
+		{
+			"type": "virtualbox-iso",
+			"format": "ova",
+			"guest_os_type": "{{user `guest_os_type`}}",
+			"vm_name": "{{user `hostname`}}",
+			"iso_urls": [
+				"{{user `iso_url_local_parent_directory`}}/{{user `iso_file_name`}}"
+			],
+			"iso_checksum": "sha256:{{user `iso_file_hash`}}",
+			"output_directory": "./output/",
+			"ssh_username": "{{user `ssh_user`}}",
+			"ssh_password": "{{user `ssh_pass`}}",
+			"shutdown_command": "echo {{user `ssh_pass`}} | {{user `shutdown_command`}}",
+			"memory": "2048",
+			"cpus": "2",
+			"disk_size": "25000",
+			"headless": "true",
+			"http_directory": "http",
+			"ssh_wait_timeout": "24h",
+			"ssh_pty": "true",
+			"vboxmanage_post": [
+				[
+					"modifyvm",
+					"{{user `hostname`}}",
+					"--cpus",
+					"2"
+				],
+				[
+					"modifyvm",
+					"{{user `hostname`}}",
+					"--memory",
+					"8192"
+				],
+				[
+					"modifyvm",
+					"{{user `hostname`}}",
+					"--vram",
+					"128"
+				],
+				[
+					"modifyvm",
+					"{{user `hostname`}}",
+					"--nic1",
+					"nat"
+				],
+				[
+					"modifyvm",
+					"{{user `hostname`}}",
+					"--groups",
+					"/Sandbox"
+				]
+			],
+			"boot_command": [
+				"<esc><wait>",
+				"/install.amd/vmlinuz<wait>",
+				" auto<wait>",
+				" url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/{{user `os_build_conf`}}<wait>",
+				" DEBIAN_FRONTEND=noninteractive<wait>",
+				" initrd=/install.amd/initrd.gz<wait>",
+				" fb=false",
+				" domain=<wait>",
+				" hostname={{user `hostname`}}<wait>",
+				"<enter><wait>"
+			]
+		}
+	],
+	"provisioners": [
+		{
+			"type": "shell",
+			"script": "./scripts/{{user `shell_provisioner`}}",
+			"environment_vars": [
+				"SSH_PASSWORD={{user `ssh_pass`}}"
+			]
+		}
+	]
+}
