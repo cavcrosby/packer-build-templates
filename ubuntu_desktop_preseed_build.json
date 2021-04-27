@@ -64,14 +64,6 @@
                     "{{user `hostname`}}",
                     "--groups",
                     "/Sandbox"
-                ],
-                [
-                    "snapshot",
-                    "{{user `hostname`}}",
-                    "take",
-                    "Clean Setup/Config",
-                    "--description",
-                    "VM Machine installed with OS. CPU, RAM, and VRAM are set according to defaults from build template. Finally, Host Adapter is set for the network configuration."
                 ]
             ],
             "boot_command": [
