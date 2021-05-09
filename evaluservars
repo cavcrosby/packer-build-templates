@@ -15,6 +15,7 @@
 #   ISO_IMAGES_PATH
 #   SHELL_PROVISIONER_NAME
 #   PACKER_BUILD_TEMPLATE_NAME
+#   JENKINS_GITHUB_CREDENTIAL_SECRET
 # Outputs:
 #   - the previous template but with _PLACEHOLDER(s) evaluated
 #######################################
@@ -28,6 +29,7 @@ evaluservars () {
     jq < "$PACKER_BUILD_TEMPLATE_NAME" --arg PACKERBUILDS_BUILD_NAME "$PACKERBUILDS_BUILD_NAME" --arg GUEST_OS_TYPE "$GUEST_OS_TYPE" \
      --arg OS_BUILD_CONF_NAME "$OS_BUILD_CONF_NAME" --arg ISO_FILE "$ISO_FILE" --arg ISO_CHECKSUM "$ISO_CHECKSUM" \
      --arg ISO_IMAGES_PATH "file://$ISO_IMAGES_PATH" --arg SHELL_PROVISIONER_NAME "$SHELL_PROVISIONER_NAME" \
+     --arg JENKINS_GITHUB_CREDENTIAL_SECRET "$JENKINS_GITHUB_CREDENTIAL_SECRET" \
      '. += (
         { variables: 
             {
@@ -40,7 +42,8 @@ evaluservars () {
             "iso_file_name": $ISO_FILE,
             "iso_file_hash": $ISO_CHECKSUM,
             "iso_url_local_parent_directory": $ISO_IMAGES_PATH,
-            "shell_provisioner": $SHELL_PROVISIONER_NAME
+            "shell_provisioner": $SHELL_PROVISIONER_NAME,
+            "github_secret": $JENKINS_GITHUB_CREDENTIAL_SECRET
             }
         }
     )' > "$TEMP_FILE_NAME"

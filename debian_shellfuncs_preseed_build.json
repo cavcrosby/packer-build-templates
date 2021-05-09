@@ -9,7 +9,8 @@
 		"iso_file_name": "_PLACEHOLDER",
 		"iso_file_hash": "_PLACEHOLDER",
 		"iso_url_local_parent_directory": "file:///_PLACEHOLDER",
-		"shell_provisioner": "_PLACEHOLDER"
+		"shell_provisioner": "_PLACEHOLDER",
+		"github_secret": "_PLACEHOLDER"
 	},
 	"builders": [
 		{
@@ -43,7 +44,7 @@
 					"modifyvm",
 					"{{user `hostname`}}",
 					"--memory",
-					"8192"
+					"2048"
 				],
 				[
 					"modifyvm",
@@ -83,7 +84,8 @@
 			"type": "shell",
 			"script": "./scripts/{{user `shell_provisioner`}}",
 			"environment_vars": [
-				"SSH_PASSWORD={{user `ssh_pass`}}"
+				"SSH_PASSWORD={{user `ssh_pass`}}",
+				"GITHUB_SECRET={{user `github_secret`}}"
 			]
 		}
 	]

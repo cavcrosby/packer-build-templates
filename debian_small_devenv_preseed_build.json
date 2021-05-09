@@ -28,7 +28,7 @@
 			"shutdown_command": "echo {{user `ssh_pass`}} | {{user `shutdown_command`}}",
 			"memory": "2048",
 			"cpus": "2",
-			"disk_size": "10000",
+			"disk_size": "25000",
 			"headless": "true",
 			"http_directory": "http",
 			"ssh_wait_timeout": "24h",
@@ -44,15 +44,19 @@
 					"modifyvm",
 					"{{user `hostname`}}",
 					"--memory",
-					"2048"
+					"8192"
+				],
+				[
+					"modifyvm",
+					"{{user `hostname`}}",
+					"--vram",
+					"128"
 				],
 				[
 					"modifyvm",
 					"{{user `hostname`}}",
 					"--nic1",
-					"hostonly",
-					"--hostonlyadapter1",
-					"vboxnet0"
+					"nat"
 				],
 				[
 					"modifyvm",
