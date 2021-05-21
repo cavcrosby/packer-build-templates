@@ -1,6 +1,6 @@
 # packer-build-templates
 
-For reference, see https://github.com/reap2sow1/jenkins-packerbuilds.
+For reference, see https://github.com/cavcrosby/jenkins-packerbuilds.
 
 ## License
 
