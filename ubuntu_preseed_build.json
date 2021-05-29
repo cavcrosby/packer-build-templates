@@ -84,6 +84,7 @@
             "type": "shell",
             "script": "./scripts/{{user `shell_provisioner`}}",
             "environment_vars": [
+                "SSH_USER={{user `ssh_user`}}",
                 "SSH_PASSWORD={{user `ssh_pass`}}",
                 "GITHUB_SECRET={{user `github_secret`}}"
             ]
