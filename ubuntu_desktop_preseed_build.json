@@ -1,9 +1,9 @@
 {
     "variables": {
         "hostname": "_PLACEHOLDER",
-        "ssh_user": "reap2sow1",
-        "ssh_pass": "Passw0rd!",
-        "shutdown_command": "sudo -S shutdown -h now",
+        "ssh_user": "_PLACEHOLDER",
+        "ssh_pass": "_PLACEHOLDER",
+        "shutdown_command": "_PLACEHOLDER",
         "guest_os_type": "_PLACEHOLDER",
         "os_build_conf": "_PLACEHOLDER",
         "iso_file_name": "_PLACEHOLDER",
