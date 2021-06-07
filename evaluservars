@@ -6,36 +6,33 @@
 # Used to determine fill-in configurations for 
 # the template file used by HashiCorp's Packer.
 # Globals:
-#   HOSTNAME
+#   PROGRAM_NAME
+#   BUILD_NAME
 #   GUEST_OS_TYPE
-#   PACKERBUILDS_BUILD_NAME
 #   OS_BUILD_CONF_NAME
 #   ISO_FILE
 #   ISO_CHECKSUM
 #   ISO_IMAGES_PATH
 #   SHELL_PROVISIONER_NAME
-#   SHELL_PROVISIONERS_ENV_FILE_NAME
-#   PACKER_BUILD_TEMPLATE_NAME
+#   SHELL_PROVISIONERS_CONFIG_FILE_NAME
+#   PACKER_TEMPLATE_NAME
 #   JENKINS_GITHUB_CREDENTIAL_SECRET
 # Outputs:
 #   - the previous template but with _PLACEHOLDER(s) evaluated
 #######################################
 evaluservars () {
-    # NOTE: getting the PROGRAM_NAME currently is bash specfic
-    # see https://stackoverflow.com/questions/1835943/how-to-determine-function-name-from-inside-a-function
-    PROGRAM_NAME="${FUNCNAME[0]}"
     TEMP_FILE_NAME="${PROGRAM_NAME}-temp"
     # check jq documentation, inspired from:
     # https://stackoverflow.com/questions/53670702/jq-error-test1-0-is-not-defined-at-top-level-line-1#answer-53674099
-    jq < "$PACKER_BUILD_TEMPLATE_NAME" --arg PACKERBUILDS_BUILD_NAME "$PACKERBUILDS_BUILD_NAME" --arg GUEST_OS_TYPE "$GUEST_OS_TYPE" \
+    jq < "$PACKER_TEMPLATE_NAME" --arg BUILD_NAME "$BUILD_NAME" --arg GUEST_OS_TYPE "$GUEST_OS_TYPE" \
      --arg OS_BUILD_CONF_NAME "$OS_BUILD_CONF_NAME" --arg ISO_FILE "$ISO_FILE" --arg ISO_CHECKSUM "$ISO_CHECKSUM" \
      --arg ISO_IMAGES_PATH "file://$ISO_IMAGES_PATH" --arg SHELL_PROVISIONER_NAME "$SHELL_PROVISIONER_NAME" \
-     --arg SHELL_PROVISIONERS_ENV_FILE_NAME "$SHELL_PROVISIONERS_ENV_FILE_NAME" \
+     --arg SHELL_PROVISIONERS_CONFIG_FILE_NAME "$SHELL_PROVISIONERS_CONFIG_FILE_NAME" \
      --arg JENKINS_GITHUB_CREDENTIAL_SECRET "$JENKINS_GITHUB_CREDENTIAL_SECRET" \
      '. *= (
         { variables: 
             {
-            "hostname": $PACKERBUILDS_BUILD_NAME,
+            "vm_name": $BUILD_NAME,
             "ssh_user": "reap2sow1",
             "ssh_pass": "Passw0rd!",
             "shutdown_command": "sudo -S shutdown -h now",
@@ -45,10 +42,10 @@ evaluservars () {
             "iso_file_hash": $ISO_CHECKSUM,
             "iso_url_local_parent_directory": $ISO_IMAGES_PATH,
             "shell_provisioner": $SHELL_PROVISIONER_NAME,
-            "shell_provisioner_env_file_name": $SHELL_PROVISIONERS_ENV_FILE_NAME,
+            "shell_provisioners_config_file_name": $SHELL_PROVISIONERS_CONFIG_FILE_NAME,
             "github_secret": $JENKINS_GITHUB_CREDENTIAL_SECRET
             }
         }
     )' > "$TEMP_FILE_NAME"
-    mv "$TEMP_FILE_NAME" "$PACKER_BUILD_TEMPLATE_NAME"
+    mv "$TEMP_FILE_NAME" "$PACKER_TEMPLATE_NAME"
 }

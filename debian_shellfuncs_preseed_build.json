@@ -1,6 +1,6 @@
 {
 	"variables": {
-		"hostname": "_PLACEHOLDER",
+		"vm_name": "_PLACEHOLDER",
 		"ssh_user": "_PLACEHOLDER",
 		"ssh_pass": "_PLACEHOLDER",
 		"shutdown_command": "_PLACEHOLDER",
@@ -9,20 +9,16 @@
 		"iso_file_name": "_PLACEHOLDER",
 		"iso_file_hash": "_PLACEHOLDER",
 		"iso_url_local_parent_directory": "file:///_PLACEHOLDER",
-		"shell_provisioner": "_PLACEHOLDER",
-		"shell_provisioner_env_file_name": "_PLACEHOLDER",
+		"shell_provisioners_config_file_name": "_PLACEHOLDER",
 		"github_secret": "_PLACEHOLDER",
-		"nic1_hostonlyif1_name": "{{env `NIC1_HOSTONLYIF1_NAME`}}",
-		"shellfuncs_vm_ipv4_addr": "{{env `SHELLFUNCS_VM_IPV4_ADDR`}}",
-		"shellfuncs_vm_subnet_mask": "{{env `SHELLFUNCS_VM_SUBNET_MASK`}}",
-		"shellfuncs_vm_gateway": "{{env `SHELLFUNCS_VM_GATEWAY`}}"
+		"nic2_hostonlyif_name": "{{env `NIC2_HOSTONLYIF_NAME`}}"
 	},
 	"builders": [
 		{
 			"type": "virtualbox-iso",
 			"format": "ova",
 			"guest_os_type": "{{user `guest_os_type`}}",
-			"vm_name": "{{user `hostname`}}",
+			"vm_name": "{{user `vm_name`}}",
 			"iso_urls": [
 				"{{user `iso_url_local_parent_directory`}}/{{user `iso_file_name`}}"
 			],
@@ -38,34 +34,18 @@
 			"http_directory": "http",
 			"ssh_wait_timeout": "24h",
 			"ssh_pty": "true",
-			"vboxmanage": [
-				[
-					"modifyvm",
-					"{{user `hostname`}}",
-					"--nic1",
-					"hostonly",
-					"--hostonlyadapter1",
-					"{{user `nic1_hostonlyif1_name`}}"
-				]
-			],
 			"vboxmanage_post": [
 				[
 					"modifyvm",
-					"{{user `hostname`}}",
+					"{{user `vm_name`}}",
 					"--cpus",
 					"2"
 				],
 				[
 					"modifyvm",
-					"{{user `hostname`}}",
+					"{{user `vm_name`}}",
 					"--memory",
 					"2048"
-				],
-				[
-					"modifyvm",
-					"{{user `hostname`}}",
-					"--groups",
-					"/Project VMs"
 				]
 			],
 			"boot_command": [
@@ -75,43 +55,34 @@
 				" url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/{{user `os_build_conf`}}<wait>",
 				" DEBIAN_FRONTEND=noninteractive<wait>",
 				" initrd=/install.amd/initrd.gz<wait>",
-				" fb=false",
+				" fb=false<wait>",
 				" domain=<wait>",
-				" hostname={{user `hostname`}}<wait>",
-				" shellfuncs_vm_ipv4_addr={{user `shellfuncs_vm_ipv4_addr`}}",
-				" shellfuncs_vm_subnet_mask={{user `shellfuncs_vm_subnet_mask`}}",
-				" shellfuncs_vm_gateway={{user `shellfuncs_vm_gateway`}}",
+				" hostname={{user `vm_name`}}<wait>",
 				"<enter><wait>"
 			]
 		}
 	],
 	"provisioners": [
 		{
-			"type": "shell-local",
-			"inline": [
-				"# turn off VM to add needed vnics besides the first one",
-				"vboxmanage controlvm {{user `hostname`}} poweroff",
-				"# wait a few seconds before attempting to modify VM settings",
-				"sleep 30",
-				"vboxmanage modifyvm {{user `hostname`}} --nic2 nat",
-				"vboxmanage startvm {{user `hostname`}} --type headless",
-				"# wait a few seconds when starting the VM to ensure it has initialized",
-				"sleep 30",
-				"# NOTE: get sequential vnic MAC addresses, (e.g. MACADDRESS1 should be for nic1)",
-				"# and add them to a shell startup file to be pulled by the next shell session",
-				"$mac_addresses=\"$(vboxmanage showvminfo {{user `hostname`}} -machinereadable | grep macaddress* | tr '[:lower:]' '[:upper:]')\"",
-				"for mac_addr in $mac_addresses; do vboxmanage guestcontrol {{user `hostname`}} --username {{user `ssh_user`}} --password {{user `ssh_pass`}} run -- /bin/bash 'echo \"export $mac_addr\" >> ${HOME}/.profile'; done"
-			]
+		  "type": "shell-local",
+		  "script": "./scripts/local-shell-provisioner-bash-shellfuncs",
+		  "environment_vars": [
+			"SSH_USER={{user `ssh_user`}}",
+			"SSH_PASSWORD={{user `ssh_pass`}}",
+			"VM_NAME={{user `vm_name`}}",
+			"SHELL_PROVISIONERS_CONFIG_FILE_NAME={{user `shell_provisioners_config_file_name`}}",
+			"NIC2_HOSTONLYIF_NAME={{user `nic2_hostonlyif_name`}}"
+		  ]
 		},
 		{
-			"type": "shell",
-			"script": "./scripts/{{user `shell_provisioner`}}",
-			"environment_vars": [
-				"SSH_USER={{user `ssh_user`}}",
-				"SSH_PASSWORD={{user `ssh_pass`}}",
-				"GITHUB_SECRET={{user `github_secret`}}",
-				"SHELL_PROVISIONERS_ENV_FILE_NAME={{user `shell_provisioner_env_file_name`}}"
-			]
+		  "type": "shell",
+		  "script": "./scripts/shell-provisioner-debian-like-shellfuncs",
+		  "environment_vars": [
+			"SSH_USER={{user `ssh_user`}}",
+			"SSH_PASSWORD={{user `ssh_pass`}}",
+			"GITHUB_SECRET={{user `github_secret`}}",
+			"SHELL_PROVISIONERS_CONFIG_FILE_NAME={{user `shell_provisioners_config_file_name`}}"
+		  ]
 		}
-	]
+	  ]
 }

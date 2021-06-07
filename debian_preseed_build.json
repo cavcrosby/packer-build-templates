@@ -1,6 +1,6 @@
 {
 	"variables": {
-		"hostname": "_PLACEHOLDER",
+		"vm_name": "_PLACEHOLDER",
 		"ssh_user": "_PLACEHOLDER",
 		"ssh_pass": "_PLACEHOLDER",
 		"shutdown_command": "_PLACEHOLDER",
@@ -17,7 +17,7 @@
 			"type": "virtualbox-iso",
 			"format": "ova",
 			"guest_os_type": "{{user `guest_os_type`}}",
-			"vm_name": "{{user `hostname`}}",
+			"vm_name": "{{user `vm_name`}}",
 			"iso_urls": [
 				"{{user `iso_url_local_parent_directory`}}/{{user `iso_file_name`}}"
 			],
@@ -36,19 +36,19 @@
 			"vboxmanage_post": [
 				[
 					"modifyvm",
-					"{{user `hostname`}}",
+					"{{user `vm_name`}}",
 					"--cpus",
 					"2"
 				],
 				[
 					"modifyvm",
-					"{{user `hostname`}}",
+					"{{user `vm_name`}}",
 					"--memory",
 					"2048"
 				],
 				[
 					"modifyvm",
-					"{{user `hostname`}}",
+					"{{user `vm_name`}}",
 					"--nic1",
 					"hostonly",
 					"--hostonlyadapter1",
@@ -56,7 +56,7 @@
 				],
 				[
 					"modifyvm",
-					"{{user `hostname`}}",
+					"{{user `vm_name`}}",
 					"--groups",
 					"/Sandbox"
 				]
@@ -70,7 +70,7 @@
 				" initrd=/install.amd/initrd.gz<wait>",
 				" fb=false",
 				" domain=<wait>",
-				" hostname={{user `hostname`}}<wait>",
+				" hostname={{user `vm_name`}}<wait>",
 				"<enter><wait>"
 			]
 		}
