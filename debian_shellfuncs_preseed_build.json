@@ -9,7 +9,7 @@
 		"iso_file_name": "_PLACEHOLDER",
 		"iso_file_hash": "_PLACEHOLDER",
 		"iso_url_local_parent_directory": "file:///_PLACEHOLDER",
-		"shell_provisioners_config_file_name": "_PLACEHOLDER",
+		"shell_provisioners_config_file": "_PLACEHOLDER",
 		"github_secret": "_PLACEHOLDER",
 		"nic2_hostonlyif_name": "{{env `NIC2_HOSTONLYIF_NAME`}}"
 	},
@@ -70,7 +70,7 @@
 			"SSH_USER={{user `ssh_user`}}",
 			"SSH_PASSWORD={{user `ssh_pass`}}",
 			"VM_NAME={{user `vm_name`}}",
-			"SHELL_PROVISIONERS_CONFIG_FILE_NAME={{user `shell_provisioners_config_file_name`}}",
+			"SHELL_PROVISIONERS_CONFIG_FILE={{user `shell_provisioners_config_file`}}",
 			"NIC2_HOSTONLYIF_NAME={{user `nic2_hostonlyif_name`}}"
 		  ]
 		},
@@ -81,7 +81,7 @@
 			"SSH_USER={{user `ssh_user`}}",
 			"SSH_PASSWORD={{user `ssh_pass`}}",
 			"GITHUB_SECRET={{user `github_secret`}}",
-			"SHELL_PROVISIONERS_CONFIG_FILE_NAME={{user `shell_provisioners_config_file_name`}}"
+			"SHELL_PROVISIONERS_CONFIG_FILE={{user `shell_provisioners_config_file`}}"
 		  ]
 		}
 	  ]
