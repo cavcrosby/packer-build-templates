@@ -65,7 +65,7 @@
 	"provisioners": [
 		{
 		  "type": "shell-local",
-		  "script": "./scripts/local-shell-provisioner-bash-shellfuncs",
+		  "script": "./scripts/local_shell_provisioner_bash_shellfuncs",
 		  "environment_vars": [
 			"SSH_USER={{user `ssh_user`}}",
 			"SSH_PASSWORD={{user `ssh_pass`}}",
@@ -76,7 +76,7 @@
 		},
 		{
 		  "type": "shell",
-		  "script": "./scripts/shell-provisioner-debian-like-shellfuncs",
+		  "script": "./scripts/shell_provisioner_debian_like_shellfuncs",
 		  "environment_vars": [
 			"SSH_USER={{user `ssh_user`}}",
 			"SSH_PASSWORD={{user `ssh_pass`}}",
