@@ -1,16 +1,16 @@
 {
 	"variables": {
-		"vm_name": "_PLACEHOLDER",
-		"ssh_user": "_PLACEHOLDER",
-		"ssh_pass": "_PLACEHOLDER",
-		"shutdown_command": "_PLACEHOLDER",
-		"guest_os_type": "_PLACEHOLDER",
-		"os_build_conf": "_PLACEHOLDER",
-		"iso_file_name": "_PLACEHOLDER",
-		"iso_file_hash": "_PLACEHOLDER",
-		"iso_url_local_parent_directory": "file:///_PLACEHOLDER",
-		"shell_provisioner": "_PLACEHOLDER",
-		"github_secret": "_PLACEHOLDER"
+		"vm_name": "__PLACEHOLDER__",
+		"ssh_user": "__PLACEHOLDER__",
+		"ssh_pass": "__PLACEHOLDER__",
+		"shutdown_command": "__PLACEHOLDER__",
+		"guest_os_type": "__PLACEHOLDER__",
+		"os_build_conf": "__PLACEHOLDER__",
+		"iso_file_name": "__PLACEHOLDER__",
+		"iso_file_hash": "__PLACEHOLDER__",
+		"iso_url_local_parent_directory": "file:///__PLACEHOLDER__",
+		"shell_provisioner": "__PLACEHOLDER__",
+		"github_secret": "__PLACEHOLDER__"
 	},
 	"builders": [
 		{
