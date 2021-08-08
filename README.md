@@ -1,4 +1,4 @@
-# packer-build-templates
+# packer-templates
 
 For reference, see https://github.com/cavcrosby/jenkins-packerbuilds.
 
